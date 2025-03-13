@@ -48,4 +48,43 @@ public class BinaryAPIControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.result").value(10001))
 			.andExpect(MockMvcResultMatchers.jsonPath("$.operator").value("add"));
     }
+    @Test
+    public void multiply() throws Exception {
+        this.mvc.perform(get("/multiply").param("operand1", "101").param("operand2", "11"))// 5 * 3
+            .andExpect(status().isOk())
+            .andExpect(content().string("1111")); // Expected result: 15
+    }
+
+    @Test
+    public void bitwiseAnd() throws Exception {
+        this.mvc.perform(get("/and").param("operand1", "1101").param("operand2", "1011"))// 13 & 11
+            .andExpect(status().isOk())
+            .andExpect(content().string("1001")); // Expected result: 9
+    }
+
+    @Test
+    public void bitwiseOr() throws Exception {
+        this.mvc.perform(get("/or").param("operand1", "1101").param("operand2", "1011"))// 13 | 11
+            .andExpect(status().isOk())
+            .andExpect(content().string("1111")); // Expected result: 15
+    }
+
+@Test
+public void bitwiseAndWithAllZeros() throws Exception {
+    this.mvc.perform(get("/and").param("operand1", "0000").param("operand2", "0000")) 
+        .andExpect(status().isOk())
+        .andExpect(content().string("0")); // 0000 & 0000 = 0 (leading zeros removed)
+}
+
+@Test
+public void bitwiseOrWithSingleOne() throws Exception {
+    this.mvc.perform(get("/or").param("operand1", "0001").param("operand2", "0000")) 
+        .andExpect(status().isOk())
+        .andExpect(content().string("1")); // 0001 | 0000 = 1 (leading zeros removed)
+}
+
+
+
+
+
 }
